@@ -455,3 +455,9 @@ body {
   .navbar { padding: 16px 20px; }
   .headline { letter-spacing: -1.5px; }
 }
+#orbCanvas {
+  width: 320px !important;
+  height: 320px !important;
+  display: block;
+  animation: float 4s ease-in-out infinite;
+}
