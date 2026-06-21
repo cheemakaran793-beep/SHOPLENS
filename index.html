@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <div class="sparkle s1">✦</div>
   <div class="sparkle s2">✦</div>
   <div class="sparkle s3">+</div>
@@ -18,21 +17,25 @@
 
   <nav class="navbar">
     <div class="logo">shoplens</div>
-    <button class="nav-btn">📷 Get Started</button>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="search.html" class="nav-link">AI Search</a>
+      <a href="trending.html" class="nav-link">Trending</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="assistant.html" class="nav-link">Assistant</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      <button class="nav-btn">📷 Get Started</button>
+    </div>
   </nav>
 
   <section class="hero">
     <div class="hero-left">
       <h1 class="headline">
-        Find anything<br>
-        you see<br>
-        with <span class="ai-text">AI.</span>
+        Find anything<br>you see<br>with <span class="ai-text">AI.</span>
       </h1>
-      <p class="subtext">
-        Upload a screenshot and let our vision engine identify the product,
-        compare prices, and find where to buy it instantly.
-      </p>
-
+      <p class="subtext">Upload a screenshot and let our vision engine identify the product, compare prices, and find where to buy it instantly.</p>
       <div class="cta-card">
         <div class="cta-icon">📷</div>
         <div class="cta-words">
@@ -41,16 +44,12 @@
         </div>
         <button class="arrow">→</button>
       </div>
-
       <div class="badges">
-        <span>🛡 Fast</span>
-        <span class="dot">•</span>
-        <span>🎯 Accurate</span>
-        <span class="dot">•</span>
+        <span>🛡 Fast</span><span class="dot">•</span>
+        <span>🎯 Accurate</span><span class="dot">•</span>
         <span>🔒 Private</span>
       </div>
     </div>
-
     <div class="hero-right">
       <div class="orb-wrap">
         <div class="orb">
@@ -107,7 +106,6 @@
     <p>Trusted by thousands of smart shoppers</p>
     <span class="footer-link">🔒 shoplens171.github.io</span>
   </footer>
-
   <script src="script.js"></script>
 </body>
 </html>
