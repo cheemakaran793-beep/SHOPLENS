@@ -3,17 +3,16 @@
 // ===============================
 
 function showPage(pageId) {
-  let pages = document.querySelectorAll(".page");
+  const pages = document.querySelectorAll(".page");
 
-  pages.forEach(p => {
-    p.classList.remove("active");
+  pages.forEach(page => {
+    page.style.display = "none";
   });
 
-  const activePage = document.getElementById(pageId);
-  if (activePage) {
-    activePage.classList.add("active");
+  const active = document.getElementById(pageId);
+  if (active) {
+    active.style.display = "block";
   }
-}
 }
 
 // ===============================
