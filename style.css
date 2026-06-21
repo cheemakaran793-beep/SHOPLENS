@@ -108,14 +108,17 @@ h1, h2, h3, .logo {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.orb {
+}.orb {
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #4da3ff, #0b1020);
-  box-shadow: 0 0 60px rgba(77,163,255,0.6);
+
+  background: radial-gradient(circle at 30% 30%, #a855f7, #22c55e);
+
+  box-shadow:
+    0 0 60px rgba(168, 85, 247, 0.45),
+    0 0 80px rgba(34, 197, 94, 0.35);
+
   animation: float 4s ease-in-out infinite;
 }
 
