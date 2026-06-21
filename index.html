@@ -11,22 +11,17 @@
 </head>
 <body>
 
-  <!-- Sparkles -->
   <div class="sparkle s1">✦</div>
   <div class="sparkle s2">✦</div>
   <div class="sparkle s3">+</div>
   <div class="sparkle s4">✦</div>
 
-  <!-- NAV -->
   <nav class="navbar">
     <div class="logo">shoplens</div>
     <button class="nav-btn">📷 Get Started</button>
   </nav>
 
-  <!-- HERO -->
   <section class="hero">
-
-    <!-- LEFT TEXT -->
     <div class="hero-left">
       <h1 class="headline">
         Find anything<br>
@@ -56,24 +51,12 @@
       </div>
     </div>
 
-    <!-- RIGHT ORB -->
     <div class="hero-right">
-      <div class="orb-scene">
-        <div class="orb">
-          <div class="orb-core"></div>
-          <div class="ring r1"></div>
-          <div class="ring r2"></div>
-          <div class="dot-glow g1"></div>
-          <div class="dot-glow g2"></div>
-          <div class="dot-glow g3"></div>
-        </div>
-        <div class="orb-shadow"></div>
-      </div>
+      <canvas id="orbCanvas"></canvas>
+      <div class="orb-shadow"></div>
     </div>
-
   </section>
 
-  <!-- FEATURES -->
   <section class="features">
     <div class="feat">
       <div class="feat-icon purple">🔍</div>
@@ -92,7 +75,6 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer class="footer">
     <div class="avatars">
       <img src="https://i.pravatar.cc/40?img=1"/>
@@ -105,6 +87,7 @@
     <span class="footer-link">🔒 shoplens.github.io</span>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
