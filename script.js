@@ -1,29 +1,32 @@
-const cards = document.querySelectorAll('.feature-card');
+// Scroll reveal for feature cards
+const cards = document.querySelectorAll('.feat');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry, i) => {
     if (entry.isIntersecting) {
       setTimeout(() => {
         entry.target.style.opacity = '1';
         entry.target.style.transform = 'translateY(0)';
-      }, i * 120);
+      }, i * 130);
       observer.unobserve(entry.target);
     }
   });
-}, { threshold: 0.15 });
+}, { threshold: 0.1 });
 
 cards.forEach(card => {
   card.style.opacity = '0';
-  card.style.transform = 'translateY(30px)';
-  card.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+  card.style.transform = 'translateY(28px)';
+  card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(card);
 });
 
-const ctaCard = document.querySelector('.cta-card');
-ctaCard?.addEventListener('click', () => {
-  alert('📷 Image upload coming soon!');
+// CTA click
+const cta = document.querySelector('.cta-card');
+cta?.addEventListener('click', () => {
+  alert('📷 AI image upload coming soon!');
 });
 
+// Nav button scroll
 const navBtn = document.querySelector('.nav-btn');
 navBtn?.addEventListener('click', () => {
-  ctaCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  cta?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
