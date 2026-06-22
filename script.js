@@ -41,3 +41,11 @@ const cta = document.querySelector('.cta-card');
 if (cta) cta.addEventListener('click', () => window.location.href = 'search.html');
 const navBtn = document.querySelector('.nav-btn');
 if (navBtn) navBtn.addEventListener('click', () => window.location.href = 'search.html');
+function handlePhoto(event) {
+  const file = event.target.files[0];
+  if (file) {
+    console.log("File selected:", file.name);
+    // You can replace this alert with your logic to send the file to your AI
+    alert("Photo captured successfully: " + file.name);
+  }
+}
