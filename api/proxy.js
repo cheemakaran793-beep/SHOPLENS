@@ -11,22 +11,30 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      'https://api.groq.com/openai/v1/chat/completions',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+        },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: message }] }],
-          systemInstruction: {
-            parts: [{ text: 'You are ShopLens AI, a smart shopping assistant. Help users find products, compare prices, check for scams, and make smart buying decisions. Be concise, friendly, and helpful.' }]
-          }
+          model: 'llama3-8b-8192', // Or 'llama3-70b-8192'
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are ShopLens AI, a smart shopping assistant. Help users find products, compare prices, check for scams, and make smart buying decisions. Be concise, friendly, and helpful.' 
+            },
+            { role: 'user', content: message }
+          ]
         }),
       }
     );
 
     const data = await response.json();
-    console.log('Gemini response:', JSON.stringify(data));
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not get a response.';
+    
+    // Groq uses the standard OpenAI response format
+    const reply = data.choices?.[0]?.message?.content || 'Sorry, I could not get a response.';
     res.status(200).json({ reply });
 
   } catch (error) {
