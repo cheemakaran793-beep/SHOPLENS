@@ -1,52 +1,44 @@
 export default async function handler(req, res) {
-  // 1. Only allow POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+  if (req.method !== 'POST') return res.status(405).end();
+  
   const { query } = req.body;
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-  if (!GROQ_API_KEY) {
-    return res.status(500).json({ error: 'Server configuration error: GROQ_API_KEY missing' });
-  }
+  const SERPAPI_KEY = process.env.SERPAPI_KEY; // Make sure this is in your Vercel settings
 
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    // 1. Get Product Details from Groq
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_API_KEY}`
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
       body: JSON.stringify({
         model: 'openai/gpt-oss-120b',
-        // This forces the output to be a valid JSON object
         response_format: { type: "json_object" },
-        messages: [
-          {
-            role: "system", 
-            content: "You are a shopping AI. Return a JSON object with a single key 'results' which is an array of 4 products. Each product must have: name, description, rating, price, status (safe/caution/scam), and reason."
-          },
-          {
-            role: "user",
-            content: `Search for: ${query}`
-          }
-        ]
+        messages: [{
+          role: "system", 
+          content: "Return a JSON object with a 'results' array of 4 products. Each product needs: name, description, rating, price."
+        }, {
+          role: "user",
+          content: `Search for: ${query}`
+        }]
       })
     });
-    
-    const data = await response.json();
-    
-    if (data.error) {
-      console.error("Groq API Error:", data.error);
-      return res.status(500).json({ error: data.error.message });
-    }
 
-    // Parse the response
-    const content = JSON.parse(data.choices[0].message.content);
-    res.status(200).json(content);
+    const groqData = await groqRes.json();
+    let products = JSON.parse(groqData.choices[0].message.content).results;
+
+    // 2. Fetch Images using SerpAPI
+    const productsWithImages = await Promise.all(products.map(async (p) => {
+      try {
+        const serpRes = await fetch(`https://serpapi.com/search.json?engine=google_images&q=${encodeURIComponent(p.name)}&api_key=${SERPAPI_KEY}`);
+        const serpData = await serpRes.json();
+        return { ...p, image: serpData.images_results?.[0]?.original || "" };
+      } catch (e) {
+        return { ...p, image: "" }; // Return empty image if SerpAPI fails
+      }
+    }));
+
+    res.status(200).json({ results: productsWithImages });
   } catch (error) {
-    console.error("Server Error:", error);
     res.status(500).json({ error: "Failed to fetch results" });
   }
 }
