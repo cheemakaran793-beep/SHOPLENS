@@ -2,17 +2,18 @@
 // --- Theme Handling (FIXED) ---
 // ===============================
 const initTheme = () => {
-  const themeBtn = document.querySelector('.theme-btn');
   const html = document.documentElement;
 
   // Apply saved theme
   const savedTheme = localStorage.getItem('theme') || 'light';
   html.setAttribute('data-theme', savedTheme);
 
+  const themeBtn = document.querySelector('.theme-btn');
+
   if (themeBtn) {
     themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
 
-    const toggle = (e) => {
+    const toggleTheme = (e) => {
       if (e) e.preventDefault();
 
       const isDark = html.getAttribute('data-theme') === 'dark';
@@ -21,11 +22,13 @@ const initTheme = () => {
       html.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
 
-      themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      });
     };
 
-    themeBtn.addEventListener('click', toggle);
-    themeBtn.addEventListener('touchstart', toggle, { passive: false });
+    themeBtn.addEventListener('click', toggleTheme);
+    themeBtn.addEventListener('touchstart', toggleTheme, { passive: false });
   }
 };
 
