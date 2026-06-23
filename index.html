@@ -1,3 +1,55 @@
+<div id="authOverlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+">
+
+  <div style="
+    width: 90%;
+    max-width: 360px;
+    background: #111827;
+    padding: 22px;
+    border-radius: 16px;
+    text-align: center;
+    animation: pop 0.3s ease;
+  ">
+
+    <h2 style="margin-bottom:8px;">Welcome to Shoplens</h2>
+    <p style="color:#aaa;font-size:13px;">Login, Sign up or continue as guest</p>
+
+    <input id="email" type="email" placeholder="Email"
+      style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:none;">
+
+    <input id="password" type="password" placeholder="Password"
+      style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:none;">
+
+    <button onclick="login()" style="
+      width:100%;padding:10px;margin-top:8px;
+      background:#6366f1;color:white;
+      border:none;border-radius:8px;
+    ">Login</button>
+
+    <button onclick="signup()" style="
+      width:100%;padding:10px;margin-top:8px;
+      background:#22c55e;color:white;
+      border:none;border-radius:8px;
+    ">Sign Up</button>
+
+    <button onclick="guest()" style="
+      width:100%;padding:10px;margin-top:8px;
+      background:#444;color:white;
+      border:none;border-radius:8px;
+    ">Continue as Guest</button>
+
+    <p id="msg" style="color:#aaa;font-size:12px;margin-top:10px;"></p>
+
+  </div>
+</div>
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
