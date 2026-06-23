@@ -1,5 +1,5 @@
 // ===========================================
-// 1. Theme and Animation Logic (Your Original)
+// 1. Theme and Animation Logic (Original)
 // ===========================================
 const initTheme = () => {
     const html = document.documentElement;
@@ -8,17 +8,14 @@ const initTheme = () => {
     const themeBtn = document.querySelector('.theme-btn');
     if (themeBtn) {
         themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        const toggleTheme = (e) => {
-            if (e) e.preventDefault();
+        themeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             const isDark = html.getAttribute('data-theme') === 'dark';
             const newTheme = isDark ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-            });
-        };
-        themeBtn.addEventListener('click', toggleTheme);
+            themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
     }
 };
 
@@ -45,7 +42,7 @@ const initApp = () => {
 };
 
 // ===========================================
-// 2. Scan Logic (Clean and Centralized)
+// 2. Scan Logic (The "iPhone Reliable" Way)
 // ===========================================
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
@@ -54,58 +51,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const picker = document.getElementById('filePicker');
 
     if (trigger && picker) {
-        // Trigger the hidden file input
+        // Use mousedown/touchstart for faster response on iPhone
         trigger.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             picker.click();
         });
 
-        // Handle the file selection
         picker.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+            const file = e.target.files[0];
+            if (!file) return;
 
-    alert("Compressing and Analyzing...");
-
-    // Create an image object to resize
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-    
-    img.onload = async () => {
-        const canvas = document.createElement('canvas');
-        const maxSize = 800; // Resize to max 800px width
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-            if (width > maxSize) { height *= maxSize / width; width = maxSize; }
-        } else {
-            if (height > maxSize) { width *= maxSize / height; height = maxSize; }
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        
-        // Convert to small JPEG (0.7 quality)
-        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-
-        try {
-            const response = await fetch('/api/scan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: compressedBase64 })
-            });
-            
-            const data = await response.json();
-            if (response.ok) {
-                alert("Found: " + data.product_name + "\nPrice: " + data.price);
-            } else {
-                alert("Server Error: " + data.error);
+            // Simple 4MB safety check
+            if (file.size > 4000000) {
+                alert("File too large. Please use a smaller screenshot.");
+                return;
             }
-        } catch (err) {
-            alert("Connection error: " + err.message);
-        }
-    };
+
+            alert("Analyzing your product...");
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = async () => {
+                try {
+                    const response = await fetch('/api/scan', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ image: reader.result })
+                    });
+                    
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert("Found: " + data.product_name + "\nPrice: " + (data.price || "Check link"));
+                    } else {
+                        alert("Server error: " + (data.error || "Unknown"));
+                    }
+                } catch (err) {
+                    alert("Scan failed. Check your internet.");
+                }
+            };
+        });
+    }
 });
