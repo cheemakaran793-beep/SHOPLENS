@@ -1,33 +1,90 @@
 export default async function handler(req, res) {
-  // Set headers to allow JSON
-  res.setHeader('Content-Type', 'application/json');
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: "Only POST requests allowed" });
+  const { image } = req.body;
+
+  if (!image) {
+    return res.status(400).json({ error: "No image received." });
   }
 
   try {
-    const { image } = req.body;
-    if (!image) return res.status(400).json({ error: "No image received" });
+    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: process.env.GROQ_MODEL,
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "Identify the main product in this image. Reply with ONLY the product name. Example: 'Nike Air Max 270 Black'. No explanation."
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: image
+                }
+              }
+            ]
+          }
+        ],
+        temperature: 0
+      })
+    });
 
-    // TEST: Call SerpApi directly with a dummy query to see if it responds
-    const query = "iphone 15";
-    const apiKey = process.env.SERPAPI_API_KEY;
-    const url = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(query)}&api_key=${apiKey}`;
-    
-    const response = await fetch(url);
-    const data = await response.json();
+    const groqData = await groqRes.json();
 
-    if (data.shopping_results && data.shopping_results.length > 0) {
-      return res.status(200).json({
-        product_name: data.shopping_results[0].title,
-        price: data.shopping_results[0].price
+    if (!groqRes.ok) {
+      return res.status(500).json({
+        error: groqData.error || "Groq request failed."
       });
-    } else {
-      return res.status(200).json({ product_name: "No results found", price: "N/A" });
     }
 
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+    const productName =
+      groqData.choices?.[0]?.message?.content?.trim();
+
+    if (!productName) {
+      return res.status(500).json({
+        error: "Could not identify product."
+      });
+    }
+
+    const serpRes = await fetch(
+      `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(productName)}&gl=in&hl=en&google_domain=google.co.in&api_key=${process.env.SERPAPI_KEY}`
+    );
+
+    const serpData = await serpRes.json();
+
+    const first = serpData.shopping_results?.[0];
+
+    if (!first) {
+      return res.status(200).json({
+        product_name: productName,
+        price: "Not Found",
+        image: "",
+        buy_url: ""
+      });
+    }
+
+    return res.status(200).json({
+      product_name: first.title,
+      price: first.price,
+      image: first.thumbnail,
+      buy_url: first.link
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      error: err.message
+    });
   }
 }
