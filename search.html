@@ -7,8 +7,11 @@
   <link rel="stylesheet" href="style.css"/>
   <style>
     .product-img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; display: block; margin-bottom: 10px; }
-    .result-card { border: 1px solid #ddd; padding: 20px; margin-top: 20px; border-radius: 12px; }
-    .badge { padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+    .result-card { border: 1px solid #ddd; padding: 20px; margin-top: 20px; border-radius: 12px; transition: 0.3s; }
+    .result-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .badge { padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; }
+    .tag { background: #f0f0f0; padding: 8px 16px; border-radius: 20px; cursor: pointer; display: inline-block; margin: 5px; font-size: 0.85rem; border: 1px solid #ddd; }
+    .tag:hover { background: #6366f1; color: white; }
   </style>
 </head>
 <body>
@@ -22,20 +25,22 @@
 
   <div class="page-hero">
     <h1>Shoplens <span class="ai-text">AI</span></h1>
-    <p>Search Indian products and check safety.</p>
+    <p>Search Indian products and check safety instantly.</p>
   </div>
 
   <div class="search-box">
     <div class="search-input-wrap">
-      <input class="search-input" id="searchInput" placeholder="e.g. best budget smartphone..." />
+      <input class="search-input" id="searchInput" placeholder="e.g. best skincare products..." />
       <button class="search-submit" onclick="doSearch()">Search</button>
     </div>
   </div>
 
-  <!-- Suggestion Tags (Static) -->
-  <div class="search-tags" style="margin-top:20px; text-align:center;">
-    <span class="tag" onclick="quickSearch('best smartphones in India')">📱 Budget Phones</span>
-    <span class="tag" onclick="quickSearch('is this website a scam')">⚠️ Scam Check</span>
+  <!-- Updated Suggestion Tags -->
+  <div style="margin-top:20px; text-align:center;">
+    <span class="tag" onclick="quickSearch('best skincare products India')">✨ Skincare</span>
+    <span class="tag" onclick="quickSearch('best budget smartphones India')">📱 Mobiles</span>
+    <span class="tag" onclick="quickSearch('latest ethnic wear India')">🥻 Ethnic Wear</span>
+    <span class="tag" onclick="quickSearch('smartwatches under 3000 India')">⌚ Smart Gadgets</span>
     <span class="tag" onclick="quickSearch('best running shoes India')">👟 Running Shoes</span>
   </div>
 
@@ -53,23 +58,27 @@
       const grid = document.getElementById('resultsGrid');
       grid.innerHTML = '<p style="text-align:center; padding:40px;">🔍 Searching Indian market...</p>';
 
-      const res = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query })
-      });
-      const data = await res.json();
-
-      grid.innerHTML = data.results.map(r => `
-        <div class="result-card">
-          ${r.image ? `<img src="${r.image}" class="product-img">` : ''}
-          <h3>${r.name}</h3>
-          <p>${r.description}</p>
-          <p><strong>Price:</strong> ${r.price} | ⭐ ${r.rating}</p>
-          <p>Status: <span class="badge" style="background:${r.status === 'scam' ? '#ffcccb' : '#ccffcc'}">${r.status.toUpperCase()}</span></p>
-          <a href="${r.url}" target="_blank" style="color:blue;">Visit Store</a>
-        </div>
-      `).join('');
+      try {
+        const res = await fetch('/api/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+        const data = await res.json();
+        
+        grid.innerHTML = data.results.map(r => `
+          <div class="result-card">
+            ${r.image ? `<img src="${r.image}" class="product-img">` : ''}
+            <h3>${r.name}</h3>
+            <p>${r.description}</p>
+            <p><strong>Price:</strong> ${r.price} | ⭐ ${r.rating}</p>
+            <p>Status: <span class="badge" style="background:${r.status === 'scam' ? '#ffcccb' : '#ccffcc'}">${r.status.toUpperCase()}</span></p>
+            <a href="${r.url}" target="_blank" style="color:blue;">Visit Store</a>
+          </div>
+        `).join('');
+      } catch (e) {
+        grid.innerHTML = '<p style="text-align:center; padding:40px;">❌ Error. Please check Vercel logs.</p>';
+      }
     }
   </script>
 </body>
