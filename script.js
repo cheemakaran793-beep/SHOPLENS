@@ -110,3 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
   }
+// PUT THIS AT THE VERY BOTTOM OF YOUR SCRIPT.JS
+const trigger = document.getElementById('scanTrigger');
+const picker = document.getElementById('filePicker');
+
+if (trigger) {
+    trigger.onclick = function() {
+        console.log("Button clicked!"); // Check this in your browser console
+        picker.click();
+    };
+} else {
+    console.log("Could not find scanTrigger button!");
+}
