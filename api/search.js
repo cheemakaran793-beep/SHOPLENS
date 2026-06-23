@@ -16,8 +16,9 @@ export default async function handler(req, res) {
       rating: p.rating || "N/A",
       price: p.price || "Check site",
       status: "SAFE",
-      // Reliable link: avoids tracking redirects that cause 404s
-      url: `https://www.google.com/search?q=${encodeURIComponent(p.title + " " + p.source)}`,
+      // Use the direct link provided by the API. 
+      // If the API link causes a 404, the retailer's own page might be down.
+      url: p.link, 
       image: p.thumbnail
     }));
 
