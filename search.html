@@ -5,66 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shoplens AI Search</title>
   <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    .product-img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; display: block; margin-bottom: 10px; }
+    .result-card { border: 1px solid #ddd; padding: 20px; margin-top: 20px; border-radius: 12px; }
+    .badge { padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+  </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="logo">shoplens</div>
     <div class="nav-links">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="search.html" class="nav-link active">AI Search</a>
-      <a href="trending.html" class="nav-link">Trending</a>
-      <a href="about.html" class="nav-link">About</a>
+      <a href="index.html">Home</a>
+      <a href="search.html" class="active">AI Search</a>
     </div>
-    <div class="nav-right"><button class="theme-btn" onclick="toggleTheme()">🌙</button></div>
   </nav>
 
   <div class="page-hero">
     <h1>Shoplens <span class="ai-text">AI</span></h1>
-    <p>Search any product by name, description, quality or check if it's a scam.</p>
+    <p>Search Indian products and check safety.</p>
   </div>
 
   <div class="search-box">
     <div class="search-input-wrap">
-      <input class="search-input" id="searchInput" placeholder="e.g. best wireless earbuds..." />
+      <input class="search-input" id="searchInput" placeholder="e.g. best budget smartphone..." />
       <button class="search-submit" onclick="doSearch()">Search</button>
     </div>
+  </div>
+
+  <!-- Suggestion Tags (Static) -->
+  <div class="search-tags" style="margin-top:20px; text-align:center;">
+    <span class="tag" onclick="quickSearch('best smartphones in India')">📱 Budget Phones</span>
+    <span class="tag" onclick="quickSearch('is this website a scam')">⚠️ Scam Check</span>
+    <span class="tag" onclick="quickSearch('best running shoes India')">👟 Running Shoes</span>
   </div>
 
   <div class="results-grid" id="resultsGrid"></div>
 
   <script>
+    function quickSearch(q) {
+      document.getElementById('searchInput').value = q;
+      doSearch();
+    }
+
     async function doSearch() {
       const query = document.getElementById('searchInput').value.trim();
       if (!query) return;
-      
       const grid = document.getElementById('resultsGrid');
-      grid.innerHTML = '<p style="text-align:center;padding:40px">🔍 Searching...</p>';
+      grid.innerHTML = '<p style="text-align:center; padding:40px;">🔍 Searching Indian market...</p>';
 
-      try {
-        // This now points to your secure Vercel backend function
-        const res = await fetch('/api/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query })
-        });
+      const res = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      });
+      const data = await res.json();
 
-        const data = await res.json();
-        // The backend handles the AI call and returns clean JSON
-        const results = data.results; 
-
-        grid.innerHTML = results.map(r => `
-  <div class="result-card">
-    ${r.image ? `<img src="${r.image}" alt="${r.name}" style="width:100%; border-radius:8px;">` : ''}
-    <h3>${r.name}</h3>
-    <p>${r.description}</p>
-    <p style="margin-top:8px;font-size:0.8rem;color:var(--purple)">⭐ ${r.rating} • ${r.price}</p>
-  </div>
-`).join('');
-
-      } catch (e) {
-        grid.innerHTML = '<p style="text-align:center;padding:40px">❌ Search unavailable. Check your connection.</p>';
-      }
+      grid.innerHTML = data.results.map(r => `
+        <div class="result-card">
+          ${r.image ? `<img src="${r.image}" class="product-img">` : ''}
+          <h3>${r.name}</h3>
+          <p>${r.description}</p>
+          <p><strong>Price:</strong> ${r.price} | ⭐ ${r.rating}</p>
+          <p>Status: <span class="badge" style="background:${r.status === 'scam' ? '#ffcccb' : '#ccffcc'}">${r.status.toUpperCase()}</span></p>
+          <a href="${r.url}" target="_blank" style="color:blue;">Visit Store</a>
+        </div>
+      `).join('');
     }
   </script>
 </body>
