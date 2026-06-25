@@ -63,6 +63,7 @@ module.exports = async function handler(req, res) {
     const serpData = await serpRes.json();
 
    const first = serpData.shopping_results?.[0];
+    const results = serpData.shopping_results || [];
 
 const productData = {
   product_name: first?.title || productName,
@@ -80,6 +81,7 @@ const productData = {
   safety_score: 97,
   sales_trend: "High",
   match_score: 98
+  alternatives: results.slice(0, 5)
 };
 
 return res.status(200).json(productData);
