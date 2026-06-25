@@ -1069,8 +1069,13 @@ animation:loading 2s infinite;
 }
 
 .product-left img{
-width:220px;
-border-radius:20px;
+    width:100%;
+    max-width:280px;
+    height:auto;
+    display:block;
+    margin:auto;
+    border-radius:20px;
+    object-fit:contain;
 }
 
 .product-right{
