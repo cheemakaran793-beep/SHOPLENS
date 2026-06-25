@@ -73,8 +73,17 @@ Return JSON only.
   });
 }
 
-    const productName =
-      groqData.choices?.[0]?.message?.content?.trim();
+    const raw =
+  groqData.choices?.[0]?.message?.content || "{}";
+
+let productName = "";
+
+try {
+  const parsed = JSON.parse(raw);
+  productName = parsed.product_name;
+} catch {
+  productName = raw.trim();
+}
 
     if (!productName) {
       return res.status(500).json({
