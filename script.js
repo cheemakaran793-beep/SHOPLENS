@@ -251,7 +251,7 @@ href="${item.product_link || item.link || '#'}"
 target="_blank"
 class="alt-card">
 
-<img src="${item.thumbnail || ''}">
+<img src="${item.image || ''}">
 
 <h4>${item.title || 'Product'}</h4>
 
