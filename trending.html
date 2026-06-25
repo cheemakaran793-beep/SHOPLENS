@@ -38,89 +38,96 @@
   <script src="script.js"></script>
 
    <script>
+<script>
 async function loadTrending() {
+
+  const grid = document.getElementById("trendingGrid");
+
+  grid.innerHTML = `
+    <div style="
+      text-align:center;
+      padding:60px;
+      font-size:20px;
+      font-weight:700;
+    ">
+      🔥 Loading Trending Products...
+    </div>
+  `;
 
   try {
 
-    const response = await fetch("/api/trending");
+    const res = await fetch("/api/trending");
+    const data = await res.json();
 
-    const responseData = await response.json();
-    const data = responseData.categories || [];
+    grid.innerHTML = "";
 
-    const categoryMap = {
-      clothing: "Clothing",
-      shoes: "Shoes",
-      beauty: "Beauty Products",
-      accessories: "Accessories",
-      gadgets: "Gadgets"
-    };
+    data.categories.forEach(category => {
 
-    Object.keys(categoryMap).forEach(catId => {
+      let html = `
+        <section class="trend-section">
 
-      const container =
-        document.getElementById(catId);
+          <h2>
+            ${category.title}
+          </h2>
 
-      if (!container) return;
+          <div class="trend-row">
+      `;
 
-      const catObj =
-        data.find(
-          c => c.title === categoryMap[catId]
-        );
+      category.products.forEach(product => {
 
-      const products =
-        catObj?.products || [];
+        html += `
+          <div class="trend-card premium-card">
 
-      container.innerHTML =
-        products.map(item => `
-          <div class="trend-card">
-
-            <img
-              src="${item.image}"
-              style="
-              width:100%;
-              height:200px;
-              object-fit:cover;
-              border-radius:16px;
-              "
-            >
-
-            <div style="
-              margin-top:10px;
-              font-size:12px;
-              font-weight:700;
-              color:#ff4d4d;
-            ">
-              ${item.badge}
+            <div class="trend-badge">
+              ${product.badge}
             </div>
 
-            <h3>${item.name}</h3>
+            <img
+              src="${product.image}"
+              class="trend-image"
+              onerror="this.src='https://via.placeholder.com/500?text=No+Image'"
+            >
 
-            <p>
-              ⭐ ${item.rating}
-            </p>
+            <h3>
+              ${product.name}
+            </h3>
 
-            <p>
-              📈 Trending Score:
-              ${item.trending_score}
-            </p>
+            <div class="trend-score">
+              Trending Score:
+              ${product.trending_score}%
+            </div>
 
-            <p style="
-              font-weight:800;
-              font-size:18px;
-            ">
-              ${item.price}
-            </p>
+            <div class="rating-row">
+              ⭐ ${product.rating}
+              (${product.reviews})
+            </div>
+
+            <div class="price-tag">
+              ${product.price}
+            </div>
+
+            <div class="store-name">
+              ${product.source}
+            </div>
 
             <a
-              href="${item.link}"
+              href="${product.link}"
               target="_blank"
-              class="store-btn"
+              class="deal-btn"
             >
               View Deal →
             </a>
 
           </div>
-        `).join("");
+        `;
+      });
+
+      html += `
+          </div>
+        </section>
+      `;
+
+      grid.innerHTML += html;
 
     });
 
@@ -128,19 +135,15 @@ async function loadTrending() {
 
     console.error(err);
 
-    document.getElementById(
-      "trendingGrid"
-    ).innerHTML = `
-      <p style="
-      text-align:center;
-      padding:50px;
+    grid.innerHTML = `
+      <div style="
+        text-align:center;
+        padding:50px;
       ">
-      ❌ Failed to load trends
-      </p>
+        ❌ Failed to load trends
+      </div>
     `;
-
   }
-
 }
 
 loadTrending();
