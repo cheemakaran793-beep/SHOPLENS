@@ -60,6 +60,23 @@ const initApp = () => {
 document.addEventListener('DOMContentLoaded', () => {
 
     initApp();
+    const menuBtn = document.getElementById("menuBtn");
+const drawer = document.getElementById("mobileDrawer");
+const overlay = document.getElementById("drawerOverlay");
+const closeBtn = document.getElementById("closeDrawer");
+
+function closeDrawer(){
+    drawer?.classList.remove("open");
+    overlay?.classList.remove("show");
+}
+
+menuBtn?.addEventListener("click", () => {
+    drawer?.classList.add("open");
+    overlay?.classList.add("show");
+});
+
+closeBtn?.addEventListener("click", closeDrawer);
+overlay?.addEventListener("click", closeDrawer);
 
     const trigger = document.getElementById('scanTrigger');
     const picker = document.getElementById('filePicker');
