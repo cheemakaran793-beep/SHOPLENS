@@ -1123,17 +1123,24 @@ margin-top:15px;
 }
 
 .alt-card{
-display:block;
-padding:12px;
-border-radius:18px;
-background:rgba(255,255,255,.05);
-text-decoration:none;
-color:white;
-transition:.3s;
+    background:rgba(255,255,255,.18);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:24px;
+    padding:16px;
+
+    transition:.3s;
+    cursor:pointer;
+
+    box-shadow:
+    0 8px 30px rgba(0,0,0,.08);
 }
 
 .alt-card:hover{
-transform:translateY(-3px);
+    transform:translateY(-5px);
 }
 
 .alt-card img{
@@ -1206,4 +1213,21 @@ box-sizing:border-box;
         max-width:100%;
     }
 
+}
+.alt-card h4{
+    color:#111 !important;
+    font-weight:700;
+}
+
+.alt-card p{
+    color:#555 !important;
+    font-weight:600;
+}
+
+[data-theme="dark"] .alt-card h4{
+    color:#fff !important;
+}
+
+[data-theme="dark"] .alt-card p{
+    color:#d1d5db !important;
 }
