@@ -92,7 +92,8 @@ overlay?.addEventListener("click", closeDrawer);
         picker.click();
     };
 
-    trigger.addEventListener('click', () => {
+trigger.addEventListener('click', () => {
+    alert("Button clicked");
     picker.click();
 });
     // FILE SELECT HANDLER
