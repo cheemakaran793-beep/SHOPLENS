@@ -22,10 +22,36 @@ module.exports = async function handler(req, res) {
           {
             role: "user",
             content: [
-              {
-                type: "text",
-                text: "Identify the EXACT product shown. Include brand, model, color, edition, size, variant and generation if visible. Example: Nike Air Max 270 Black Men's Running Shoes. Reply ONLY with the exact product name."
-              },
+             {
+  type: "text",
+  text: `Identify the EXACT product shown in this image.
+
+Rules:
+
+- Include brand name
+- Include model name
+- Include variant
+- Include color
+- Include edition
+- Include generation
+- Include size if visible
+
+Examples:
+
+Nike Air Max 270 Black Men's Running Shoes
+
+Apple AirPods Pro 2nd Generation USB-C
+
+Samsung Galaxy S24 Ultra Titanium Black
+
+Return ONLY the exact product title.
+
+No explanation.
+No extra text.
+No JSON.
+No markdown.
+`
+}
               {
                 type: "image_url",
                 image_url: {
