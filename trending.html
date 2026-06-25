@@ -103,7 +103,8 @@ for (const category of categories) {
     )}&gl=in&hl=en&num=10&api_key=${process.env.SERPAPI_KEY}`
   );
 
-  const data = await response.json();
+  const responseData = await response.json();
+const data = responseData.categories || [];
 
   const products = (data.shopping_results || [])
     .slice(0, 8)
